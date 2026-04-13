@@ -1,0 +1,101 @@
+// =============================================================================
+// UTILIDADES - Module 4: Event Pass
+// =============================================================================
+// Funciones de utilidad compartidas en toda la aplicación.
+// =============================================================================
+
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+/**
+ * Combina clases de Tailwind CSS de forma inteligente.
+ *
+ * ## ¿Por qué usar cn()?
+ * - clsx: Combina clases condicionales
+ * - twMerge: Resuelve conflictos de Tailwind (ej: p-2 p-4 → p-4)
+ *
+ * @example
+ * cn('p-2', condition && 'p-4', 'text-red-500')
+ */
+export function cn(...inputs: ClassValue[]): string {
+  return twMerge(clsx(inputs));
+}
+
+/**
+ * Genera un ID único compatible con CUID2.
+ *
+ * ## Nota
+ * En producción usaríamos @paralleldrive/cuid2.
+ * Esta es una implementación simplificada para el curso.
+ */
+export function generateId(): string {
+  const timestamp = Date.now().toString(36);
+  const randomPart = Math.random().toString(36).substring(2, 15);
+  return `c${timestamp}${randomPart}`;
+}
+
+/**
+ * Formatea una fecha para mostrar.
+ */
+export function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat('es-ES', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(date);
+}
+
+/**
+ * Formatea una fecha corta.
+ */
+export function formatShortDate(dateString: string): string {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat('es-ES', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  }).format(date);
+}
+
+/**
+ * Formatea un precio en euros.
+ */
+export function formatPrice(price: number): string {
+  if (price === 0) return 'Gratis';
+  return new Intl.NumberFormat('es-ES', {
+    style: 'currency',
+    currency: 'EUR',
+  }).format(price);
+}
+
+/**
+ * Simula un delay (útil para demostrar estados de carga).
+ */
+export function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * Verifica si un evento ya pasó.
+ */
+export function isEventPast(dateString: string): boolean {
+  return new Date(dateString) < new Date();
+}
+
+/**
+ * Calcula plazas disponibles.
+ */
+export function getAvailableSpots(capacity: number, registered: number): number {
+  return Math.max(0, capacity - registered);
+}
+
+/**
+ * Verifica si hay plazas disponibles.
+ */
+export function hasAvailableSpots(capacity: number, registered: number): boolean {
+  return getAvailableSpots(capacity, registered) > 0;
+}
